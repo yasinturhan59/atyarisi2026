@@ -10,7 +10,6 @@
     "node": "22.x"
   },
   "dependencies": {
-    "express": "4.21.2",
-    "ttl-live": "latest"
+    "express": "4.21.2"
   }
 }
