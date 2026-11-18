@@ -1,0 +1,12 @@
+{
+  "name": "atyarisi2026",
+  "version": "1.0.0",
+  "description": "At yarisi sunucusu",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": "20.x"
+  }
+}
