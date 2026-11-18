@@ -1,12 +1,15 @@
 {
   "name": "atyarisi2026",
   "version": "1.0.0",
-  "description": "At yarisi sunucusu",
+  "type": "module",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "engines": {
     "node": "20.x"
+  },
+  "dependencies": {
+    "tiktok-live-connector": "2.5.0"
   }
 }
