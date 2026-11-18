@@ -10,6 +10,7 @@
     "node": "20.x"
   },
   "dependencies": {
+    "express": "^4.21.2",
     "tiktok-live-connector": "2.5.0"
   }
 }
