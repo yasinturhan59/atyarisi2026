@@ -1,5 +1,5 @@
 import express from "express";
-import { TikTokLiveConnection, WebcastEvent } from "tiktok-live-connector";
+import { TikTokLive, label } from "ttl-live";
 
 const app = express();
 app.use(express.json());
@@ -21,23 +21,19 @@ app.get("/gifts", (req, res) => {
 
 app.post("/connect", async (req, res) => {
   try {
-    if (tiktok) {
-      await tiktok.disconnect();
+    if (connected) {
+      return res.json({ durum: "TikTok zaten bagli" });
     }
 
-    tiktok = new TikTokLiveConnection("bytyazilim", {
-      enableExtendedGiftInfo: true
-    });
+    tiktok = new TikTokLive("@bytyazilim");
 
-    tiktok.on(WebcastEvent.GIFT, data => {
-      const giftType = data.gift?.type ?? data.giftDetails?.giftType;
-
-      if (giftType === 1 && !data.repeatEnd) return;
+    tiktok.on("gift", event => {
+      if (event.streakable && !event.repeatEnd) return;
 
       const gift = {
-        kullanici: data.user?.uniqueId || "Bilinmiyor",
-        hediye: data.gift?.name || data.giftDetails?.giftName || String(data.giftId),
-        adet: data.repeatCount || 1
+        kullanici: label(event.user),
+        hediye: event.giftName,
+        adet: event.repeatCount || 1
       };
 
       gifts.push(gift);
@@ -48,6 +44,7 @@ app.post("/connect", async (req, res) => {
     connected = true;
 
     res.json({ durum: "TikTok baglandi" });
+
   } catch (error) {
     connected = false;
     res.status(500).json({ hata: error.message });
