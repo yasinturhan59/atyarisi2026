@@ -7,10 +7,10 @@
     "start": "node server.js"
   },
   "engines": {
-    "node": "20.x"
+    "node": "22.x"
   },
   "dependencies": {
-    "express": "^4.21.2",
-    "tiktok-live-connector": "2.5.0"
+    "express": "4.21.2",
+    "ttl-live": "latest"
   }
 }
