@@ -1,5 +1,5 @@
 import express from "express";
-import { WebcastPushConnection } from "tiktok-live-connector";
+import { TikTokLiveConnection, WebcastEvent } from "tiktok-live-connector";
 
 const app = express();
 app.use(express.json());
@@ -25,13 +25,19 @@ app.post("/connect", async (req, res) => {
       await tiktok.disconnect();
     }
 
-    tiktok = new WebcastPushConnection("bytyazilim");
+    tiktok = new TikTokLiveConnection("bytyazilim", {
+      enableExtendedGiftInfo: true
+    });
 
-    tiktok.on("gift", data => {
+    tiktok.on(WebcastEvent.GIFT, data => {
+      const giftType = data.gift?.type ?? data.giftDetails?.giftType;
+
+      if (giftType === 1 && !data.repeatEnd) return;
+
       const gift = {
-        kullanici: data.uniqueId,
-        hediye: data.giftName,
-        adet: data.repeatCount
+        kullanici: data.user?.uniqueId || "Bilinmiyor",
+        hediye: data.gift?.name || data.giftDetails?.giftName || String(data.giftId),
+        adet: data.repeatCount || 1
       };
 
       gifts.push(gift);
@@ -44,14 +50,12 @@ app.post("/connect", async (req, res) => {
     res.json({ durum: "TikTok baglandi" });
   } catch (error) {
     connected = false;
-    res.status(500).json({
-      hata: error.message
-    });
+    res.status(500).json({ hata: error.message });
   }
 });
 
 const PORT = process.env.PORT || 10000;
 
 app.listen(PORT, "0.0.0.0", () => {
-  console.log("At Yarisi sunucusu hazir");
+  console.log("At Yarisi sunucusu hazir:", PORT);
 });
